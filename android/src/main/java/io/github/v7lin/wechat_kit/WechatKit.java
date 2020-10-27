@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tencent.mm.opensdk.constants.Build;
+import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.diffdev.DiffDevOAuthFactory;
 import com.tencent.mm.opensdk.diffdev.IDiffDevOAuth;
 import com.tencent.mm.opensdk.diffdev.OAuthErrCode;
@@ -21,6 +22,7 @@ import com.tencent.mm.opensdk.modelbiz.SubscribeMessage;
 import com.tencent.mm.opensdk.modelbiz.WXLaunchMiniProgram;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.opensdk.modelmsg.ShowMessageFromWX;
 import com.tencent.mm.opensdk.modelmsg.WXEmojiObject;
 import com.tencent.mm.opensdk.modelmsg.WXFileObject;
 import com.tencent.mm.opensdk.modelmsg.WXImageObject;
@@ -71,6 +73,7 @@ public class WechatKit implements MethodChannel.MethodCallHandler, PluginRegistr
     private static final String METHOD_LAUNCHMINIPROGRAM = "launchMiniProgram";
     private static final String METHOD_PAY = "pay";
 
+    private static final String METHOD_ONLAUNCHRESP = "onLaunchResp";
     private static final String METHOD_ONAUTHRESP = "onAuthResp";
     private static final String METHOD_ONOPENURLRESP = "onOpenUrlResp";
     private static final String METHOD_ONSHAREMSGRESP = "onShareMsgResp";
@@ -113,6 +116,7 @@ public class WechatKit implements MethodChannel.MethodCallHandler, PluginRegistr
     private static final String ARGUMENT_KEY_PATH = "path";
     private static final String ARGUMENT_KEY_HDIMAGEDATA = "hdImageData";
     private static final String ARGUMENT_KEY_WITHSHARETICKET = "withShareTicket";
+    private static final String ARGUMENT_KEY_MINIPROGRAMTYPE = "miniprogramType";
     private static final String ARGUMENT_KEY_TEMPLATEID = "templateId";
     private static final String ARGUMENT_KEY_RESERVED = "reserved";
     private static final String ARGUMENT_KEY_TYPE = "type";
@@ -123,6 +127,7 @@ public class WechatKit implements MethodChannel.MethodCallHandler, PluginRegistr
     private static final String ARGUMENT_KEY_PACKAGE = "package";
     private static final String ARGUMENT_KEY_SIGN = "sign";
 
+    private static final String ARGUMENT_KEY_LAUNCH_EXTINFO = "extInfo";
     private static final String ARGUMENT_KEY_RESULT_ERRORCODE = "errorCode";
     private static final String ARGUMENT_KEY_RESULT_ERRORMSG = "errorMsg";
     private static final String ARGUMENT_KEY_RESULT_CODE = "code";
@@ -190,7 +195,17 @@ public class WechatKit implements MethodChannel.MethodCallHandler, PluginRegistr
     private IWXAPIEventHandler iwxapiEventHandler = new IWXAPIEventHandler() {
         @Override
         public void onReq(BaseReq req) {
-
+            //获取开放标签传递的extinfo数据逻辑
+            if(req.getType() == ConstantsAPI.COMMAND_SHOWMESSAGE_FROM_WX && req instanceof ShowMessageFromWX.Req) {
+                ShowMessageFromWX.Req showReq = (ShowMessageFromWX.Req) req;
+                WXMediaMessage mediaMsg = showReq.message;
+                String extInfo = mediaMsg.messageExt;
+                Map<String, Object> map = new HashMap<>();
+                map.put(ARGUMENT_KEY_LAUNCH_EXTINFO,extInfo);
+                if (channel!=null){
+                    channel.invokeMethod(METHOD_ONLAUNCHRESP,map);
+                }
+            }
         }
 
         @Override
@@ -453,6 +468,7 @@ public class WechatKit implements MethodChannel.MethodCallHandler, PluginRegistr
             object.userName = call.argument(ARGUMENT_KEY_USERNAME);
             object.path = call.argument(ARGUMENT_KEY_PATH);
             object.withShareTicket = call.argument(ARGUMENT_KEY_WITHSHARETICKET);
+            object.miniprogramType = call.argument(ARGUMENT_KEY_MINIPROGRAMTYPE);
             byte[] hdImageData = call.argument(ARGUMENT_KEY_HDIMAGEDATA);
             if (hdImageData != null) {
                 message.thumbData = hdImageData;

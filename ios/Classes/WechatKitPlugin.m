@@ -41,6 +41,7 @@ static NSString *const METHOD_SUBSCRIBEMSG = @"subscribeMsg";
 static NSString *const METHOD_LAUNCHMINIPROGRAM = @"launchMiniProgram";
 static NSString *const METHOD_PAY = @"pay";
 
+static NSString *const METHOD_ONLAUNCHRESP = @"onLaunchResp";
 static NSString *const METHOD_ONAUTHRESP = @"onAuthResp";
 static NSString *const METHOD_ONOPENURLRESP = @"onOpenUrlResp";
 static NSString *const METHOD_ONSHAREMSGRESP = @"onShareMsgResp";
@@ -84,6 +85,7 @@ static NSString *const ARGUMENT_KEY_WEBPAGEURL = @"webpageUrl";
 static NSString *const ARGUMENT_KEY_PATH = @"path";
 static NSString *const ARGUMENT_KEY_HDIMAGEDATA = @"hdImageData";
 static NSString *const ARGUMENT_KEY_WITHSHARETICKET = @"withShareTicket";
+static NSString *const ARGUMENT_KEY_MINIPROGRAMTYPE = @"miniprogramType";
 static NSString *const ARGUMENT_KEY_TEMPLATEID = @"templateId";
 static NSString *const ARGUMENT_KEY_RESERVED = @"reserved";
 static NSString *const ARGUMENT_KEY_TYPE = @"type";
@@ -94,6 +96,7 @@ static NSString *const ARGUMENT_KEY_PREPAYID = @"prepayId";
 static NSString *const ARGUMENT_KEY_PACKAGE = @"package";
 static NSString *const ARGUMENT_KEY_SIGN = @"sign";
 
+static NSString *const ARGUMENT_KEY_LAUNCH_EXTINFO = @"extInfo";
 static NSString *const ARGUMENT_KEY_RESULT_ERRORCODE = @"errorCode";
 static NSString *const ARGUMENT_KEY_RESULT_ERRORMSG = @"errorMsg";
 static NSString *const ARGUMENT_KEY_RESULT_CODE = @"code";
@@ -300,6 +303,7 @@ static NSString *const ARGUMENT_KEY_RESULT_AUTHCODE = @"authCode";
         mediaObject.webpageUrl = call.arguments[ARGUMENT_KEY_WEBPAGEURL];
         mediaObject.userName = call.arguments[ARGUMENT_KEY_USERNAME];
         mediaObject.path = call.arguments[ARGUMENT_KEY_PATH];
+        mediaObject.miniprogramType = call.arguments[ARGUMENT_KEY_MINIPROGRAMTYPE];
         FlutterStandardTypedData *hdImageData =
             call.arguments[ARGUMENT_KEY_HDIMAGEDATA];
         if (hdImageData != nil) {
@@ -394,6 +398,16 @@ static NSString *const ARGUMENT_KEY_RESULT_AUTHCODE = @"authCode";
 #pragma mark - WXApiDelegate
 
 - (void)onReq:(BaseReq *)req {
+    //获取开放标签传递的extinfo数据逻辑
+	if ([req isKindOfClass:[LaunchFromWXReq class]]) 
+	{
+		WXMediaMessage *msg = req.message;
+		NSString *openID = req.openID;
+		NSString *extinfo = req.msg.messageExt;
+		NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+        [dictionary setValue:extinfo forKey:ARGUMENT_KEY_LAUNCH_EXTINFO];
+        [_channel invokeMethod:METHOD_ONLAUNCHRESP arguments:dictionary];
+	}
 }
 
 - (void)onResp:(BaseResp *)resp {

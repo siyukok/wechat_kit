@@ -14,6 +14,7 @@ import 'package:wechat_kit/src/model/api/wechat_user_info_resp.dart';
 import 'package:wechat_kit/src/model/qrauth/wechat_qrauth_resp.dart';
 import 'package:wechat_kit/src/model/sdk/wechat_auth_resp.dart';
 import 'package:wechat_kit/src/model/sdk/wechat_launch_mini_program_resp.dart';
+import 'package:wechat_kit/src/model/sdk/wechat_launch_resp.dart';
 import 'package:wechat_kit/src/model/sdk/wechat_pay_resp.dart';
 import 'package:wechat_kit/src/model/sdk/wechat_sdk_resp.dart';
 import 'package:wechat_kit/src/model/sdk/wechat_subscribe_msg_resp.dart';
@@ -50,6 +51,7 @@ class Wechat {
   static const String _METHOD_PAY = 'pay';
 
   static const String _METHOD_ONAUTHRESP = 'onAuthResp';
+  static const String _METHOD_ONLAUNCHRESP = 'onLaunchResp';
   static const String _METHOD_ONOPENURLRESP = 'onOpenUrlResp';
   static const String _METHOD_ONSHAREMSGRESP = 'onShareMsgResp';
   static const String _METHOD_ONSUBSCRIBEMSGRESP = 'onSubscribeMsgResp';
@@ -91,11 +93,13 @@ class Wechat {
   static const String _ARGUMENT_KEY_PATH = 'path';
   static const String _ARGUMENT_KEY_HDIMAGEDATA = 'hdImageData';
   static const String _ARGUMENT_KEY_WITHSHARETICKET = 'withShareTicket';
+  static const String _ARGUMENT_KEY_MINIPROGRAMTYPE = 'miniprogramType';
   static const String _ARGUMENT_KEY_TEMPLATEID = 'templateId';
   static const String _ARGUMENT_KEY_RESERVED = 'reserved';
   static const String _ARGUMENT_KEY_TYPE = 'type';
   static const String _ARGUMENT_KEY_PARTNERID = 'partnerId';
   static const String _ARGUMENT_KEY_PREPAYID = 'prepayId';
+  static const String _ARGUMENT_KEY_LAUNCHEXTINFO = 'extInfo';
 
 //  static const String _ARGUMENT_KEY_NONCESTR = 'noncestr';
 //  static const String _ARGUMENT_KEY_TIMESTAMP = 'timestamp';
@@ -111,6 +115,9 @@ class Wechat {
 
   final StreamController<WechatAuthResp> _authRespStreamController =
       StreamController<WechatAuthResp>.broadcast();
+
+  final StreamController<WechatLaunchResp> _launchRespStreamController =
+      StreamController<WechatLaunchResp>.broadcast();
 
   final StreamController<WechatSdkResp> _openUrlRespStreamController =
       StreamController<WechatSdkResp>.broadcast();
@@ -160,6 +167,10 @@ class Wechat {
         _authRespStreamController.add(
             WechatAuthResp.fromJson(call.arguments as Map<dynamic, dynamic>));
         break;
+      case _METHOD_ONLAUNCHRESP:
+        _launchRespStreamController.add(
+            WechatLaunchResp.fromJson(call.arguments as Map<dynamic, dynamic>));
+        break;
       case _METHOD_ONOPENURLRESP:
         _openUrlRespStreamController.add(
             WechatSdkResp.fromJson(call.arguments as Map<dynamic, dynamic>));
@@ -198,6 +209,11 @@ class Wechat {
   /// 登录
   Stream<WechatAuthResp> authResp() {
     return _authRespStreamController.stream;
+  }
+
+  /// 微信小程序打开app
+  Stream<WechatLaunchResp> launchResp() {
+    return _launchRespStreamController.stream;
   }
 
   /// 打开浏览器
@@ -649,6 +665,7 @@ class Wechat {
     String path,
     Uint8List hdImageData,
     bool withShareTicket = false,
+    int miniprogramType = WechatMiniProgram.release
   }) {
     assert(scene == WechatScene.SESSION);
     assert(title == null || title.length <= 512);
@@ -669,6 +686,7 @@ class Wechat {
         if (path != null) _ARGUMENT_KEY_PATH: path,
         if (hdImageData != null) _ARGUMENT_KEY_HDIMAGEDATA: hdImageData,
         _ARGUMENT_KEY_WITHSHARETICKET: withShareTicket,
+        _ARGUMENT_KEY_MINIPROGRAMTYPE:miniprogramType
       },
     );
   }
