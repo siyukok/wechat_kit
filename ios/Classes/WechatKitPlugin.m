@@ -85,7 +85,7 @@ static NSString *const ARGUMENT_KEY_WEBPAGEURL = @"webpageUrl";
 static NSString *const ARGUMENT_KEY_PATH = @"path";
 static NSString *const ARGUMENT_KEY_HDIMAGEDATA = @"hdImageData";
 static NSString *const ARGUMENT_KEY_WITHSHARETICKET = @"withShareTicket";
-static NSString *const ARGUMENT_KEY_MINIPROGRAMTYPE = @"miniprogramType";
+static NSString *const ARGUMENT_KEY_MINIPROGRAMTYPE = @"miniProgramType";
 static NSString *const ARGUMENT_KEY_TEMPLATEID = @"templateId";
 static NSString *const ARGUMENT_KEY_RESERVED = @"reserved";
 static NSString *const ARGUMENT_KEY_TYPE = @"type";
@@ -303,7 +303,7 @@ static NSString *const ARGUMENT_KEY_RESULT_AUTHCODE = @"authCode";
         mediaObject.webpageUrl = call.arguments[ARGUMENT_KEY_WEBPAGEURL];
         mediaObject.userName = call.arguments[ARGUMENT_KEY_USERNAME];
         mediaObject.path = call.arguments[ARGUMENT_KEY_PATH];
-        mediaObject.miniprogramType = call.arguments[ARGUMENT_KEY_MINIPROGRAMTYPE];
+        mediaObject.miniProgramType = call.arguments[ARGUMENT_KEY_MINIPROGRAMTYPE];
         FlutterStandardTypedData *hdImageData =
             call.arguments[ARGUMENT_KEY_HDIMAGEDATA];
         if (hdImageData != nil) {
@@ -401,9 +401,9 @@ static NSString *const ARGUMENT_KEY_RESULT_AUTHCODE = @"authCode";
     //获取开放标签传递的extinfo数据逻辑
 	if ([req isKindOfClass:[LaunchFromWXReq class]]) 
 	{
-		WXMediaMessage *msg = req.message;
-		NSString *openID = req.openID;
-		NSString *extinfo = req.msg.messageExt;
+        LaunchFromWXReq *launchReq = (LaunchFromWXReq*)req;
+		WXMediaMessage *msg = launchReq.message;
+		NSString *extinfo = msg.messageExt;
 		NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
         [dictionary setValue:extinfo forKey:ARGUMENT_KEY_LAUNCH_EXTINFO];
         [_channel invokeMethod:METHOD_ONLAUNCHRESP arguments:dictionary];
