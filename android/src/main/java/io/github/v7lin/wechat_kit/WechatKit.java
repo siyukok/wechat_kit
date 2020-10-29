@@ -116,7 +116,7 @@ public class WechatKit implements MethodChannel.MethodCallHandler, PluginRegistr
     private static final String ARGUMENT_KEY_PATH = "path";
     private static final String ARGUMENT_KEY_HDIMAGEDATA = "hdImageData";
     private static final String ARGUMENT_KEY_WITHSHARETICKET = "withShareTicket";
-    private static final String ARGUMENT_KEY_MINIPROGRAMTYPE = "miniprogramType";
+    private static final String ARGUMENT_KEY_MINIPROGRAMTYPE = "miniProgramType";
     private static final String ARGUMENT_KEY_TEMPLATEID = "templateId";
     private static final String ARGUMENT_KEY_RESERVED = "reserved";
     private static final String ARGUMENT_KEY_TYPE = "type";

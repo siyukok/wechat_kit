@@ -93,7 +93,7 @@ class Wechat {
   static const String _ARGUMENT_KEY_PATH = 'path';
   static const String _ARGUMENT_KEY_HDIMAGEDATA = 'hdImageData';
   static const String _ARGUMENT_KEY_WITHSHARETICKET = 'withShareTicket';
-  static const String _ARGUMENT_KEY_MINIPROGRAMTYPE = 'miniprogramType';
+  static const String _ARGUMENT_KEY_MINIPROGRAMTYPE = 'miniProgramType';
   static const String _ARGUMENT_KEY_TEMPLATEID = 'templateId';
   static const String _ARGUMENT_KEY_RESERVED = 'reserved';
   static const String _ARGUMENT_KEY_TYPE = 'type';
@@ -655,18 +655,17 @@ class Wechat {
   }
 
   /// 分享 - 小程序 - 目前只支持分享到会话
-  Future<void> shareMiniProgram({
-    @required int scene,
-    String title,
-    String description,
-    Uint8List thumbData,
-    @required String webpageUrl,
-    @required String userName,
-    String path,
-    Uint8List hdImageData,
-    bool withShareTicket = false,
-    int miniprogramType = WechatMiniProgram.release
-  }) {
+  Future<void> shareMiniProgram(
+      {@required int scene,
+      String title,
+      String description,
+      Uint8List thumbData,
+      @required String webpageUrl,
+      @required String userName,
+      String path,
+      Uint8List hdImageData,
+      bool withShareTicket = false,
+      int miniProgramType = WechatMiniProgram.release}) {
     assert(scene == WechatScene.SESSION);
     assert(title == null || title.length <= 512);
     assert(description == null || description.length <= 1024);
@@ -686,7 +685,7 @@ class Wechat {
         if (path != null) _ARGUMENT_KEY_PATH: path,
         if (hdImageData != null) _ARGUMENT_KEY_HDIMAGEDATA: hdImageData,
         _ARGUMENT_KEY_WITHSHARETICKET: withShareTicket,
-        _ARGUMENT_KEY_MINIPROGRAMTYPE:miniprogramType
+        _ARGUMENT_KEY_MINIPROGRAMTYPE: miniProgramType
       },
     );
   }
