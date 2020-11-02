@@ -12,12 +12,12 @@ class WechatLaunchResp extends WechatSdkResp {
   WechatLaunchResp({
     int errorCode,
     String errorMsg,
-    this.returnKey,
+    this.extInfo,
   }) : super(errorCode: errorCode, errorMsg: errorMsg);
 
   factory WechatLaunchResp.fromJson(Map<dynamic, dynamic> json) => _$WechatLaunchRespFromJson(json);
 
-  final String returnKey;
+  final String extInfo;
 
   @override
   Map<dynamic, dynamic> toJson() => _$WechatLaunchRespToJson(this);
