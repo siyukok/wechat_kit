@@ -10,7 +10,7 @@ WechatLaunchResp _$WechatLaunchRespFromJson(Map json) {
   return WechatLaunchResp(
     errorCode: json['errorCode'] as int ?? 0,
     errorMsg: json['errorMsg'] as String,
-    returnKey: json['extInfo'] as String,
+    extInfo: json['extInfo'] as String,
   );
 }
 
