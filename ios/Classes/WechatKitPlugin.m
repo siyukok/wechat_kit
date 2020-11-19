@@ -303,7 +303,7 @@ static NSString *const ARGUMENT_KEY_RESULT_AUTHCODE = @"authCode";
         mediaObject.webpageUrl = call.arguments[ARGUMENT_KEY_WEBPAGEURL];
         mediaObject.userName = call.arguments[ARGUMENT_KEY_USERNAME];
         mediaObject.path = call.arguments[ARGUMENT_KEY_PATH];
-        mediaObject.miniProgramType = call.arguments[ARGUMENT_KEY_MINIPROGRAMTYPE];
+        mediaObject.miniProgramType = [call.arguments[ARGUMENT_KEY_MINIPROGRAMTYPE] intValue];
         FlutterStandardTypedData *hdImageData =
             call.arguments[ARGUMENT_KEY_HDIMAGEDATA];
         if (hdImageData != nil) {
